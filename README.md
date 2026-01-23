@@ -2,6 +2,7 @@
 
 Substance to XIV is a python plugin for Substance Painter that converts exported textures to XIV TEX format and copies them to a mod folder of your choosing. When the export is done, you have the option to force a Penumbra redraw automatically.
 
+
 TODO: (img/gif of plugin UI)
 
 It works only on Windows and uses ConsoleTools and TexConv (both bundled in TexTools, which is required) to convert your textures to DSS and then package them as TEX files XIV can read.
@@ -64,6 +65,12 @@ After the first run the plugin will try to detect your TexTools folder, if you i
 The UI should be self explanatory enough, but if you mouse over buttons and so on you will get tooltips that explain things further. To get familiar the best thing to do is make a test project or open an old one, go through the settings in the plugin window and export your textures. Make backups of your files if needed to avoid any chance of loosing data.
 
 Here's a list of the settings and what they do:
+
+<!-- markdownlint-disable -->
+<div align="center">
+  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui.png" alt="Substance Painter to XIV UI" title="Substance Painter to XIV UI" />
+</div>
+<!-- markdownlint-restore -->
 
 ### Main Settings
 
