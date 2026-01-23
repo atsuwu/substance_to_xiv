@@ -2,7 +2,6 @@
 
 Substance to XIV is a python plugin for Substance Painter that converts exported textures to XIV TEX format and copies them to a mod folder of your choosing. When the export is done, you have the option to force a Penumbra redraw automatically.
 
-
 TODO: (img/gif of plugin UI)
 
 It works only on Windows and uses ConsoleTools and TexConv (both bundled in TexTools, which is required) to convert your textures to DSS and then package them as TEX files XIV can read.
@@ -11,7 +10,7 @@ This makes the process of tweaking & iterating on your project textures and seei
 
 ## How it Works
 
-The general idea behind the plugin is that it sees the textures you export in Substance Painter, and while enabled, it will take any PNG or TGA you've exported, convert it to DDS with some optional compression options, then package the DDS as a TEX file, copy the file to the directory you specify and then send a request to Penumbra to redraw your character.
+When enabled, the plugin takes any PNG or TGA you've exported from Substance Painter, converts it to DDS, then packages the DDS as a TEX file, copies the file to the directory you specify and then send a request to Penumbra to redraw your character.
 
 ## Limitations
 
@@ -67,8 +66,23 @@ The UI should be self explanatory enough, but if you mouse over buttons and so o
 Here's a list of the settings and what they do:
 
 <!-- markdownlint-disable -->
-<div align="center">
-  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui.png" alt="Substance Painter to XIV UI" title="Substance Painter to XIV UI" />
+<style>
+    @media (max-width: 799px) {
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+    @media (min-width: 800px) {
+        .center img {
+            float: right;
+            margin: 0 0 30px 30px;
+        }
+    }
+</style>
+<div class="center">
+    <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui.png" alt="Substance Painter to XIV UI" title="Substance Painter to XIV UI" />
 </div>
 <!-- markdownlint-restore -->
 
@@ -104,12 +118,13 @@ If you want to edit the code, dev environment setup is explained in the [BUILD.m
 
 ## Acknowledgements
 
-- [Textools](https://www.ffxiv-textools.net/).
+- [TexTools](https://www.ffxiv-textools.net/).
 - [TexConv](https://github.com/microsoft/DirectXTex).
 - Aleks for PenumbraClient class in his [Yet Another Addon](https://github.com/Arrenval/Yet-Another-Addon) project.
 - Ottermandias for [Penumbra](https://github.com/xivdev/Penumbra).
-- SB for texture export presets, color row and color blend material setup.
-- This plugins draws inspiration from [Substance-Painter-DDS-Exporter](https://github.com/emomilol1213/Substance-Painter-DDS-Exporter) by emomilol1213, as well as the sample plugins from the Substance Painter Python API docs.
+- The [Dalamud](https://github.com/goatcorp/Dalamud) team for making all this possible.
+- SB! for [Substance Painter Export + Colorsetting Resources](https://xivmodarchive.com/modid/111473), color row and color blend material setup.
+- This plugin draws inspiration from [Substance-Painter-DDS-Exporter](https://github.com/emomilol1213/Substance-Painter-DDS-Exporter) by emomilol1213, as well as the sample plugins from the Substance Painter Python API docs.
 
 ## License
 
