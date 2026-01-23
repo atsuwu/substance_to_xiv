@@ -66,23 +66,8 @@ The UI should be self explanatory enough, but if you mouse over buttons and so o
 Here's a list of the settings and what they do:
 
 <!-- markdownlint-disable -->
-<style>
-    @media (max-width: 799px) {
-        .center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-    }
-    @media (min-width: 800px) {
-        .center img {
-            float: right;
-            margin: 0 0 30px 30px;
-        }
-    }
-</style>
-<div class="center">
-    <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui.png" alt="Substance Painter to XIV UI" title="Substance Painter to XIV UI" />
+<div align="center">
+  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui.png" alt="Substance Painter to XIV UI" title="Substance Painter to XIV UI" />
 </div>
 <!-- markdownlint-restore -->
 
