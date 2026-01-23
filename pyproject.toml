@@ -1,0 +1,34 @@
+[project]
+name = "substance_to_xiv"
+version = "0.1.0"
+description = "Substance Painter plugin that converts exported textures to XIV TEX format and copies them to a mod folder."
+authors = [
+    {name = "Atsu"}
+]
+license = {text = "GPL-3.0"}
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+]
+
+[dependency-groups]
+dev = [
+    "pyside6 (>=6.10.1,<7.0.0)",
+    "pyqt6 (>=6.10.2,<7.0.0)",
+    "watchdog (>=6.0.0,<7.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.scripts]
+build = "tools.build:main"
+
+[tool.substance_to_xiv]
+destination = "C:/Users/yogen/Documents/Adobe/Adobe Substance 3D Painter/python/plugins/substance_to_xiv"
+config-file = ".substance_to_xiv.toml"
+
