@@ -2,7 +2,7 @@
 
 Substance to XIV is a python plugin for Substance Painter that converts exported textures to XIV TEX format and copies them to a mod folder of your choosing. When the export is done, you have the option to force a Penumbra redraw automatically.
 
-(img/gif of plugin UI)
+TODO: (img/gif of plugin UI)
 
 It works only on Windows and uses ConsoleTools and TexConv (both bundled in TexTools, which is required) to convert your textures to DSS and then package them as TEX files XIV can read.
 
@@ -16,15 +16,21 @@ The general idea behind the plugin is that it sees the textures you export in Su
 
 - The plugin relies on you already doing what's necessary for Substance Painter to spit out textures that will work in XIV, with all the channels configured properly. You can achieve this with the right channels setup in your texture set and export presets that match those channels to the `_id`, `_m`, `_n` files you are exporting.
 
-  I'm planning to make a document where I explain my setup for character (skin shader) and general gear (character shader) project setups and export templates, but some of these rely and build upon efforts from other members in the community that I need to remember and give credit to first.
+  If you need help with this, I would recommend this [resource](https://xivmodarchive.com/modid/111473) by SB! which helps you set up your project and organize your color setting textures.
 
-- For now I'm exporting uncompressed textures only, since Penumbra has convenient settings to compress your textures when done editing them, but I'd like to find a good way to expose the compression formats to be used based on texture suffixes so that final texture can be exported from the plugin.
+  I'm planning to make a document where I explain my setup for character skin and for gear and export templates, which are based off the link above.
 
-- Because it relies on TexConv to convert files to DDS and i can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux maybe not be all that complicated and if anyone wants to look into it, you can get in touch with me.
+- For now the plugin exports uncompressed textures only, which is faster, since Penumbra has convenient settings to compress your textures when done editing them. I'd like to find a good way to expose the compression formats to be used based on texture suffixes so that final texture can be exported from the plugin.
+
+## Requirements
+
+- **Windows:** Because it relies on TexConv to convert files to DDS and i can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux maybe not be all that complicated and if anyone wants to look into it, you can give it a try!
+
+- **TexTools:** TexTools needs to be installed on your system for this plugin to work. If you don't have TextTools yet, get it from [https://www.ffxiv-textools.net/](https://www.ffxiv-textools.net/). Installing on the default path is recommended but you can choose your TexTools installation path if needed.
+
+- **Substance Painter:** Substance Painter v11.1.1 or above is recommended, since I can't reliably say whether older versions will work.
 
 ## How to Install
-
-⚠️ TexTools is required for this plugin to work, and only Windows is supported. If you don't have TextTools yet, get it from [https://www.ffxiv-textools.net/](https://www.ffxiv-textools.net/).
 
 1. [Download the latest release](https://github.com/atsuwu/substance_to_xiv/releases). You will get a zip file with a folder named `substance_to_xiv`.
 
@@ -47,11 +53,43 @@ Documents
 
 Now back in Substance Painter, navigate to the `Python` menu, and click on `Reload Plugins Folder`, then click on the menu again and enable the plugin there. The plugin's panel should pop up somewhere in your UI and you can move it to your liking now.
 
+After the first run the plugin will try to detect your TexTools folder, if you installed it in the default location at `C:\Program Files\FFXIV TexTools`. If you installed it in a different location you will have to use the button near the top of the panel to set the path manually.
+
 ℹ️ If you close the panel and can't find it anymore, look for it in the `Window` menu.
 
 ℹ️ Additionally, if you have the `Docks` toolbar enabled and you close the plugin's panel, you will find a `XIV TEX` button on the `Docks` toolbar that you can use to access the plugin at any time without it getting in the way too much.
 
-After the first run the plugin will try to detect your TexTools folder, if you installed it in the default location at `C:\Program Files\FFXIV TexTools`. If you installed it in a different location you will have to use the button at the top of the panel to set the path manually.
+## How to Use
+
+The UI should be self explanatory enough, but if you mouse over buttons and so on you will get tooltips that explain things further. To get familiar the best thing to do is make a test project or open an old one, go through the settings in the plugin window and export your textures. Make backups of your files if needed to avoid any chance of loosing data.
+
+Here's a list of the settings and what they do:
+
+### Main Settings
+
+- **Substance to XIV Enabled/Disabled:** This buttons toggles the plugin on and off. If toggled off, the plugins will ignore exports
+
+- **TexTools Path:** On the first run, the plugin will try to detect if TexTools is installed in the default path, and if so it will set this path for you. If you have installed TexTools in another path, you'll see a prompt to choose the folder. You can click the button at anytime to change the path if you ever need to or if it's not detected automatically.
+
+### Project Settings
+
+- **Texture Folder button:** This is the path that TEX files will be copied to automatically (when the settings to do so is enabled, see below), so it should point to the textures folder in your mod.
+
+  ⚠️ The plugin overwrites files when exporting so make sure to save backups of them if you need to.
+
+- **Move TEX files to mod folder:** This can only be enabled once you have set a path in the previous settings. When enabled TEX files will be moved to the specified folder, if disabled TEX files will be saved on your export folder.
+
+- **Force Penumbra redraw after export:** If enabled, the plugin will try to request to Penumbra to perform a redraw, so that your textures can update in-game right after export. If Penumbra isn't available you'll see an error message in the log.
+
+- **Keep DDS files:** If enabled, DDS files generated before converting to TEX will be kept. DDS files are not moved to any folder, and will remain in your export folder. When this is disabled, the DDS files will be removed as soon as the TEX file is generated.
+
+### Log
+
+- **Log:** The log will show relevant information of what the plugin is doing at any point, loading settings from a project that was opened, saving or deleting files, changing settings, etc.
+
+- **Export:** The Export button will open the Export Textures windows in Substance Painter. In future releases I'd like it to do a quick export.
+
+- **Clear Log:** This just clears the log completely.
 
 ## How to Build
 
@@ -61,9 +99,10 @@ If you want to edit the code, dev environment setup is explained in the [BUILD.m
 
 - [Textools](https://www.ffxiv-textools.net/).
 - [TexConv](https://github.com/microsoft/DirectXTex).
-- Aleks for PenumbraClient class in his Yet Another Addon project.
-- Ottermandias for Penumbra.
+- Aleks for PenumbraClient class in his [Yet Another Addon](https://github.com/Arrenval/Yet-Another-Addon) project.
+- Ottermandias for [Penumbra](https://github.com/xivdev/Penumbra).
 - SB for texture export presets, color row and color blend material setup.
+- This plugins draws inspiration from [Substance-Painter-DDS-Exporter](https://github.com/emomilol1213/Substance-Painter-DDS-Exporter) by emomilol1213, as well as the sample plugins from the Substance Painter Python API docs.
 
 ## License
 
@@ -83,3 +122,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+Final Fantasy XIV © SQUARE ENIX CO., LTD. All Rights Reserved.
+
+This project is not affiliated with SQUARE ENIX CO., LTD. in any way.
