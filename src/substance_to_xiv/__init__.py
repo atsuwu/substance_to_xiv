@@ -227,9 +227,9 @@ class XIVTexPlugin:
         event = QKeyEvent(QEvent.KeyPress, Qt.Key_E, Qt.ControlModifier | Qt.ShiftModifier)
         QtWidgets.QApplication.sendEvent(substance_painter.ui.get_main_window(), event)
 
-        js_code = 'alg.mapexport.getProjectExportPreset()'
-        baking_parameters = substance_painter.js.evaluate(js_code)
-        self.log.append(str(baking_parameters))
+        # js_code = 'alg.mapexport.getProjectExportPreset()'
+        # baking_parameters = substance_painter.js.evaluate(js_code)
+        # self.log.append(str(baking_parameters))
         # ---> resource://your_assets/ATSU XIV Normal Mask Custom AO?version=9846787643662974824.spexp
 
         #  Generate an export JSON config like in file:///C:/Program%20Files/Adobe/Adobe%20Substance%203D%20Painter/resources/python-doc/substance_painter/export.html#substance_painter.export.list_project_textures
