@@ -55,7 +55,7 @@ After the first run the plugin will try to detect your TexTools folder, if you i
 
 ## How to Build
 
-If you want to edit the code, dev environment setup is explained in the [BUILD.md](https://github.com/atsuwu/substance_to_xiv/blob/main/README.md) file.
+If you want to edit the code, dev environment setup is explained in the [BUILD.md](https://github.com/atsuwu/substance_to_xiv/blob/main/BUILD.md) file.
 
 ## Acknowledgements
 
