@@ -27,8 +27,3 @@ package-mode = false
 
 [tool.poetry.scripts]
 build = "tools.build:main"
-
-[tool.substance_to_xiv]
-destination = "C:/Users/yogen/Documents/Adobe/Adobe Substance 3D Painter/python/plugins/substance_to_xiv"
-config-file = ".substance_to_xiv.toml"
-

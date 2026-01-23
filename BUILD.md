@@ -15,7 +15,7 @@ git clone https://github.com/atsuwu/substance_to_xiv.git
 cd substance_to_xiv
 ```
 
-- Create file `substance_to_xiv.toml`
+- Create a file named `substance_to_xiv.toml`.
 
 ```bash
 touch substance_to_xiv.toml
@@ -24,7 +24,7 @@ touch substance_to_xiv.toml
 - Add this code to the file:
 
 ```toml
-source = "src/substance_to_xiv"
+[substance_to_xiv]
 destination = "path/to/substance/painter/plugins/substance_to_xiv"
 ```
 

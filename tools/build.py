@@ -10,25 +10,23 @@ import tomllib
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-PYPROJECT = PROJECT_ROOT / "pyproject.toml"
+PROJECT_CONFIG = PROJECT_ROOT / "substance_to_xiv.toml"
 
 
 def load_config():
-    with PYPROJECT.open("rb") as f:
+    with PROJECT_CONFIG.open("rb") as f:
         data = tomllib.load(f)
 
-    tool_cfg = data.get("tool", {}).get("substance_to_xiv", {})
-
-    src = tool_cfg.get("source", "src/substance_to_xiv")
-    dst = tool_cfg.get("destination")
+    cfg = data.get("substance_to_xiv", {})
+    dst = cfg.get("destination")
 
     if not dst:
-        print("Missing [tool.substance_to_xiv].destination in pyproject.toml")
+        print("Missing [substance_to_xiv].destination in substance_to_xiv.toml")
         sys.exit(1)
 
     return (
-        (PROJECT_ROOT / src).resolve(),
-        (PROJECT_ROOT / dst).resolve(),
+        (PROJECT_ROOT / "src/substance_to_xiv").resolve(),
+        (Path(dst)).resolve(),
     )
 
 
