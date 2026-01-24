@@ -306,7 +306,7 @@ class XIVTexPlugin:
         self.disable_project_settings()
 
     def on_export_textures_ended(self, res):
-        enabled = settings.get("textools_enable")
+        enabled = metadata.get("plugin_enable")
         if not enabled:
             self.log.append("Plugin disabled, ignoring export.")
             return
