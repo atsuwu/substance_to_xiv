@@ -36,17 +36,6 @@ def load_metadata():
         return "Project settings loaded."
 
 
-# def get_textools_button_text(self):
-#     textools_path = settings.get("textools_path", "C:\Program Files\FFXIV TexTools")
-#     if os.path.exists(textools_path):
-#         self.TexToolsPath = textools_path
-#         settings.set("textools_path", textools_path)
-#         return f"TexTools path: {self.TexToolsPath}"
-#     else:
-#         self.TexToolsPath = None
-#         return "TexTools not found, click here to set path..."
-
-
 def init_enable_button(self):
     state = settings.get("textools_enable", True)
     settings.set("textools_enable", state)
@@ -106,6 +95,12 @@ class XIVTexPlugin:
         self.button_quick_export.setToolTip("Open Export Textures window.")
         self.button_clear_log.setToolTip("Clear all log contents.")
 
+        # Handle UI on startup.
+        if substance_painter.project.is_open():
+            self.update_ui()
+        else:
+            self.disable_project_settings()
+
         # Add elements to layout.
         layout = QtWidgets.QVBoxLayout()
 
@@ -144,8 +139,8 @@ class XIVTexPlugin:
         self.button_enable.clicked.connect(self.button_enable_click)
         self.button_textools.clicked.connect(self.button_textools_click)
         self.checkbox_move_tex.clicked.connect(self.checkbox_move_tex_click)
-        self.checkbox_keep_dds.clicked.connect(self.checkbox_keep_dds_click)
         self.checkbox_redraw.clicked.connect(self.checkbox_redraw_click)
+        self.checkbox_keep_dds.clicked.connect(self.checkbox_keep_dds_click)
         self.button_modfolder.clicked.connect(self.button_modfolder_click)
         self.button_quick_export.clicked.connect(self.button_quick_export_click)
         self.button_clear_log.clicked.connect(self.button_clear_log_click)
@@ -154,10 +149,14 @@ class XIVTexPlugin:
         connections = {
             substance_painter.event.ProjectOpened: self.on_project_opened,
             substance_painter.event.ProjectCreated: self.on_project_created,
+            substance_painter.event.ProjectAboutToClose: self.on_project_about_to_close,
             substance_painter.event.ExportTexturesEnded: self.on_export_textures_ended,
         }
         for event, callback in connections.items():
             substance_painter.event.DISPATCHER.connect(event, callback)
+
+        if settings.get("textools_path"):
+            self.button_textools.setMinimumHeight(40)
 
     def button_enable_click(self):
         state = not settings.get("textools_enable")
@@ -201,6 +200,7 @@ class XIVTexPlugin:
         starting_path = metadata.get("mod_folder")
         if starting_path == "":
             starting_path = penumbra.mod_directory()
+        # TODO: Needs testing.
         if starting_path == "":
             starting_path = "C:\\"
 
@@ -241,9 +241,11 @@ class XIVTexPlugin:
         self.log.clear()
 
     def update_ui(self):
-        self.checkbox_move_tex.setChecked(metadata.get("move_tex"))
-        self.checkbox_keep_dds.setChecked(metadata.get("keep_dds"))
+        self.checkbox_move_tex.setChecked(True if metadata.get("move_tex") else False)
+        self.checkbox_redraw.setChecked(True if metadata.get("redraw") else False)
+        self.checkbox_keep_dds.setChecked(True if metadata.get("keep_dds") else False)
         mod_folder = metadata.get("mod_folder")
+        mod_folder_button_size = 0
         if mod_folder == "":
             mod_folder = "Click here to set a texture folder..."
             self.checkbox_move_tex.setDisabled(True)
@@ -252,7 +254,29 @@ class XIVTexPlugin:
             mod_folder = mod_folder[-45:][mod_folder.find('/'):]
             mod_folder = f"Mod folder\n'.../{mod_folder}'"
             self.checkbox_move_tex.setDisabled(False)
+            mod_folder_button_size = 40
         self.button_modfolder.setText(mod_folder)
+        self.button_modfolder.setMinimumHeight(mod_folder_button_size)
+
+    def enable_project_settings(self):
+        self.button_modfolder.setDisabled(False)
+        self.checkbox_move_tex.setDisabled(False)
+        self.checkbox_redraw.setDisabled(False)
+        self.checkbox_keep_dds.setDisabled(False)
+        self.button_quick_export.setDisabled(False)
+
+    def disable_project_settings(self):
+        self.button_modfolder.setDisabled(True)
+        self.checkbox_move_tex.setDisabled(True)
+        self.checkbox_redraw.setDisabled(True)
+        self.checkbox_keep_dds.setDisabled(True)
+        self.button_quick_export.setDisabled(True)
+
+        self.button_modfolder.setText("Click here to set a texture folder...")
+        self.button_modfolder.setMinimumHeight(0)
+        self.checkbox_move_tex.setChecked(False)
+        self.checkbox_redraw.setChecked(False)
+        self.checkbox_keep_dds.setChecked(False)
 
     def __del__(self):
         # Remove all added UI elements.
@@ -262,13 +286,19 @@ class XIVTexPlugin:
         self.log.append(f"Project '{substance_painter.project.name()}' opened.")
         result = load_metadata()
         self.log.append(result)
+        self.enable_project_settings()
         self.update_ui()
 
     def on_project_created(self, e):
         self.log.append(f"Project '{substance_painter.project.name()}' created.")
         result = init_metadata()
         self.log.append(result)
+        self.enable_project_settings()
         self.update_ui()
+
+    def on_project_about_to_close(self, e):
+        self.log.append(f"Project '{substance_painter.project.name()}' closed.")
+        self.disable_project_settings()
 
     def on_export_textures_ended(self, res):
         enabled = settings.get("textools_enable")
@@ -279,7 +309,6 @@ class XIVTexPlugin:
         self.log.append(res.message)
         for file_list in res.textures.values():
             for file_path in file_list:
-
                 dds = convert.to_dds(file_path, settings.get("textools_path"))
                 self.log.append(f"Created: {os.path.basename(dds)}")
 
