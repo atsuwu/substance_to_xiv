@@ -319,9 +319,11 @@ class XIVTexPlugin:
                     os.remove(dds)
                     self.log.append(f"Deleted: {os.path.basename(dds)}")
 
-        self.log.append("All done, attempting Penumbra redraw...")
-        redraw = penumbra.redraw_self()
-        self.log.append(redraw)
+        redraw = metadata.get("redraw")
+        if redraw:
+            self.log.append("All done, attempting Penumbra redraw...")
+            redraw = penumbra.redraw_self()
+            self.log.append(redraw)
 
 
 def start_plugin():
