@@ -20,6 +20,7 @@ XIVTEX_PLUGIN = None
 
 def init_metadata():
     metadata.set("version", 1)
+    metadata.set("plugin_enable", False)
     metadata.set("mod_folder", "")
     metadata.set("move_tex", False)
     metadata.set("keep_dds", False)
@@ -37,12 +38,12 @@ def load_metadata():
 
 
 def init_enable_button(self):
-    state = settings.get("textools_enable", True)
-    settings.set("textools_enable", state)
+    state = metadata.get("plugin_enable")
+    metadata.set("plugin_enable", state)
 
 
 def get_enable_button_text(self):
-    enabled = settings.get("textools_enable", True)
+    enabled = metadata.get("plugin_enable")
     if enabled:
         return "Substance to XIV Enabled"
     else:
@@ -65,19 +66,17 @@ def get_textools_button_text(self):
 class XIVTexPlugin:
     def __init__(self):
         # Init settings.
-        init_enable_button(self)
-        enable_button_text = get_enable_button_text(self)
         textools_button_text = get_textools_button_text(self)
 
         # Layout Elements.
         self.label_mainsettings = QtWidgets.QLabel("MAIN SETTINGS")
-        self.button_enable = QtWidgets.QPushButton(enable_button_text)
         self.button_textools = QtWidgets.QPushButton(textools_button_text)
         self.checkbox_move_tex = QtWidgets.QCheckBox("Move TEX files to mod folder")
         self.checkbox_move_tex.setDisabled(True)
         self.checkbox_redraw = QtWidgets.QCheckBox("Force Penumbra redraw after export")
         self.checkbox_keep_dds = QtWidgets.QCheckBox("Keep DDS files")
         self.label_projectsettings = QtWidgets.QLabel("PROJECT SETTINGS")
+        self.button_enable = QtWidgets.QPushButton("Substance to XIV Disabled")
         self.button_modfolder = QtWidgets.QPushButton("Click here to set a texture folder...")
         self.label_log = QtWidgets.QLabel("LOG")
         self.log = QtWidgets.QTextEdit()
@@ -106,17 +105,17 @@ class XIVTexPlugin:
 
         layout_main = QtWidgets.QVBoxLayout()
         layout_main.addWidget(self.label_mainsettings)
-        layout_main.addWidget(self.button_enable)
         layout_main.addWidget(self.button_textools)
-        layout_main.insertSpacing(3, 15)
+        layout_main.insertSpacing(2, 15)
 
         layout_project = QtWidgets.QVBoxLayout()
         layout_project.addWidget(self.label_projectsettings)
+        layout_project.addWidget(self.button_enable)
         layout_project.addWidget(self.button_modfolder)
         layout_project.addWidget(self.checkbox_move_tex)
         layout_project.addWidget(self.checkbox_redraw)
         layout_project.addWidget(self.checkbox_keep_dds)
-        layout_project.insertSpacing(5, 15)
+        layout_project.insertSpacing(6, 15)
         layout_project.addWidget(self.label_log)
         layout_project.addWidget(self.log)
 
@@ -159,8 +158,8 @@ class XIVTexPlugin:
             self.button_textools.setMinimumHeight(40)
 
     def button_enable_click(self):
-        state = not settings.get("textools_enable")
-        settings.set("textools_enable", state)
+        state = not metadata.get("plugin_enable")
+        metadata.set("plugin_enable", state)
         self.button_enable.setText(get_enable_button_text(self))
 
     def button_textools_click(self):
@@ -232,18 +231,21 @@ class XIVTexPlugin:
         # self.log.append(str(baking_parameters))
         # ---> resource://your_assets/ATSU XIV Normal Mask Custom AO?version=9846787643662974824.spexp
 
-        #  Generate an export JSON config like in file:///C:/Program%20Files/Adobe/Adobe%20Substance%203D%20Painter/resources/python-doc/substance_painter/export.html#substance_painter.export.list_project_textures
+        #  Generate an export JSON config like in substance_painter.export.list_project_textures
         #  and use the current export preset to export the project.
-        #  Will need to set an export directory and get the active texture set with file:///C:/Program%20Files/Adobe/Adobe%20Substance%203D%20Painter/resources/python-doc/substance_painter/textureset/index.html#substance_painter.textureset.get_active_stack
+        #  Will need to set an export directory and get the active texture set with substance_painter.textureset.get_active_stack
         #  Will also need to add an option to get all texture sets and export all.
 
     def button_clear_log_click(self):
         self.log.clear()
 
     def update_ui(self):
+        if metadata.get("plugin_enable"):
+            self.button_enable.setText("Substance to XIV Enabled")
         self.checkbox_move_tex.setChecked(True if metadata.get("move_tex") else False)
         self.checkbox_redraw.setChecked(True if metadata.get("redraw") else False)
         self.checkbox_keep_dds.setChecked(True if metadata.get("keep_dds") else False)
+
         mod_folder = metadata.get("mod_folder")
         mod_folder_button_size = 0
         if mod_folder == "":
@@ -259,6 +261,7 @@ class XIVTexPlugin:
         self.button_modfolder.setMinimumHeight(mod_folder_button_size)
 
     def enable_project_settings(self):
+        self.button_enable.setDisabled(False)
         self.button_modfolder.setDisabled(False)
         self.checkbox_move_tex.setDisabled(False)
         self.checkbox_redraw.setDisabled(False)
@@ -266,12 +269,14 @@ class XIVTexPlugin:
         self.button_quick_export.setDisabled(False)
 
     def disable_project_settings(self):
+        self.button_enable.setDisabled(True)
         self.button_modfolder.setDisabled(True)
         self.checkbox_move_tex.setDisabled(True)
         self.checkbox_redraw.setDisabled(True)
         self.checkbox_keep_dds.setDisabled(True)
         self.button_quick_export.setDisabled(True)
 
+        self.button_enable.setText("Substance to XIV Disabled")
         self.button_modfolder.setText("Click here to set a texture folder...")
         self.button_modfolder.setMinimumHeight(0)
         self.checkbox_move_tex.setChecked(False)
