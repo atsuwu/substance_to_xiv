@@ -91,6 +91,12 @@ The project tab contains settings that are specific to the currently open projec
 
 - **Clear Log:** This clears the log completely.
 
+<!-- markdownlint-disable -->
+<div align="center">
+  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/ui_settings.png" alt="Substance Painter to XIV Settings UI" title="Substance Painter to XIV Settings UI" />
+</div>
+<!-- markdownlint-restore -->
+
 ### Settings Tab
 
 The settings tabs contains settings that are set globally regardless or what projects you are working on.
