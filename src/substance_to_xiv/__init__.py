@@ -125,6 +125,55 @@ class XIVTexPlugin:
         tab_settings_layout = QtWidgets.QVBoxLayout(tab_settings)
         tab_settings_layout.setAlignment(Qt.AlignTop)
         tab_settings_layout.addWidget(self.button_textools)
+        tab_settings_layout.insertSpacing(1, 15)
+
+        self.formats = [
+            "BC3_UNORM",
+            "BC4_UNORM",
+            "BC5_UNORM",
+            "BC7_UNORM",
+            "R8G8B8A8_UNORM"
+        ]
+
+        self.label_formats = QtWidgets.QLabel("COMPRESSION FORMATS:")
+        tab_settings_layout.addWidget(self.label_formats)
+
+        self.label_d = QtWidgets.QLabel("Diffuse:")
+        self.combo_format_d = QtWidgets.QComboBox()
+        self.combo_format_d.addItems(self.formats)
+
+        diffuse_layout = QtWidgets.QHBoxLayout()
+        diffuse_layout.addWidget(self.label_d)
+        diffuse_layout.addWidget(self.combo_format_d)
+
+        self.label_id = QtWidgets.QLabel("Id:")
+        self.combo_format_id = QtWidgets.QComboBox()
+        self.combo_format_id.addItems(self.formats)
+
+        id_layout = QtWidgets.QHBoxLayout()
+        id_layout.addWidget(self.label_id)
+        id_layout.addWidget(self.combo_format_id)
+
+        self.label_m = QtWidgets.QLabel("Mask:")
+        self.combo_format_m = QtWidgets.QComboBox()
+        self.combo_format_m.addItems(self.formats)
+
+        mask_layout = QtWidgets.QHBoxLayout()
+        mask_layout.addWidget(self.label_m)
+        mask_layout.addWidget(self.combo_format_m)
+
+        self.label_n = QtWidgets.QLabel("Normal:")
+        self.combo_format_n = QtWidgets.QComboBox()
+        self.combo_format_n.addItems(self.formats)
+
+        normal_layout = QtWidgets.QHBoxLayout()
+        normal_layout.addWidget(self.label_n)
+        normal_layout.addWidget(self.combo_format_n)
+
+        tab_settings_layout.addLayout(diffuse_layout)
+        tab_settings_layout.addLayout(id_layout)
+        tab_settings_layout.addLayout(mask_layout)
+        tab_settings_layout.addLayout(normal_layout)
 
         # Add tabs buttons.
         tabs.addTab(tab_project, "Project")
@@ -150,6 +199,24 @@ class XIVTexPlugin:
         self.button_modfolder.clicked.connect(self.button_modfolder_click)
         self.button_quick_export.clicked.connect(self.button_quick_export_click)
         self.button_clear_log.clicked.connect(self.button_clear_log_click)
+        self.combo_format_d.currentTextChanged.connect(self.combo_format_diffuse_changed)
+        self.combo_format_id.currentTextChanged.connect(self.combo_format_id_changed)
+        self.combo_format_m.currentTextChanged.connect(self.combo_format_mask_changed)
+        self.combo_format_n.currentTextChanged.connect(self.combo_format_normal_changed)
+
+        # Combo boxes initial state.
+        format_d = settings.get("format_d", "BC7_UNORM")
+        index = self.formats.index(format_d)
+        self.combo_format_d.setCurrentIndex(index)
+        format_id = settings.get("format_id", "BC7_UNORM")
+        index = self.formats.index(format_id)
+        self.combo_format_id.setCurrentIndex(index)
+        format_m = settings.get("format_m", "BC7_UNORM")
+        index = self.formats.index(format_m)
+        self.combo_format_m.setCurrentIndex(index)
+        format_n = settings.get("format_n", "R8G8B8A8_UNORM")
+        index = self.formats.index(format_n)
+        self.combo_format_n.setCurrentIndex(index)
 
         # Subscribe to project related events.
         connections = {
@@ -246,6 +313,18 @@ class XIVTexPlugin:
     def button_clear_log_click(self):
         self.log.clear()
 
+    def combo_format_diffuse_changed(self, value):
+        settings.set("format_d", value)
+
+    def combo_format_id_changed(self, value):
+        settings.set("format_id", value)
+
+    def combo_format_mask_changed(self, value):
+        settings.set("format_m", value)
+
+    def combo_format_normal_changed(self, value):
+        settings.set("format_n", value)
+
     def update_ui(self):
         if metadata.get("plugin_enable"):
             self.button_enable.setText("Substance to XIV Enabled")
@@ -321,10 +400,10 @@ class XIVTexPlugin:
         self.log.append(res.message)
         for file_list in res.textures.values():
             for file_path in file_list:
-                dds = convert.to_dds(file_path, settings.get("textools_path"))
-                self.log.append(f"Created: {os.path.basename(dds)}")
+                dds, dds_format = convert.to_dds(file_path, settings.all())
+                self.log.append(f"Created: {os.path.basename(dds)} ({dds_format})")
 
-                tex = convert.to_tex(file_path, settings.get("textools_path"))
+                tex = convert.to_tex(file_path, settings.all())
                 self.log.append(f"Created: {os.path.basename(tex)}")
 
                 if not metadata.get("keep_dds"):

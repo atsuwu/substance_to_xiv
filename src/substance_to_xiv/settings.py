@@ -37,24 +37,3 @@ class Settings:
 
     def all(self) -> dict:
         return dict(self._data)
-
-
-# settings = Settings()
-
-# # Set values
-# settings.set("volume", 60)
-# settings.set("theme", "dark")
-# settings.set("debug", True)
-
-# # Get values
-# volume = settings.get("volume", 50)
-# theme = settings.get("theme")
-
-# missing_setting = settings.get("theme2")
-# print(missing_setting)
-
-# # Remove a setting
-# settings.delete("debug")
-
-# # Get all settings
-# print(settings.all())

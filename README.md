@@ -2,7 +2,7 @@
 
 **TL;DR:** Substance to XIV is a python plugin for Substance Painter that converts exported textures to XIV TEX format and copies them to a mod folder of your choosing. When the export is done, you have the option to force a Penumbra redraw automatically. It requires Windows and TexTools installed.
 
-    TODO: (GIF demo)
+> TODO: (GIF demo)
 
 The goal is to make exporting textures directly to the game as fast as possible so you can test and tweak them more easily.
 
@@ -18,11 +18,11 @@ When enabled, the plugin takes any PNG or TGA you've exported from Substance Pai
 
   I'm planning to make a document where I explain my own setup for character skin and for gear and export templates, which are based off the link above.
 
-- For now the plugin exports uncompressed textures only, which is faster, since Penumbra has convenient settings to compress your textures when done editing them. I'd like to find a good way to expose the compression formats to be used based on texture suffixes so that final texture can be exported from the plugin.
+- Limited support for multiple texture sets in one project: can't export each set to a different folder. Exporting everything to one single folder should work fine.
 
 ## Requirements
 
-- **Windows:** Because it relies on TexConv to convert files to DDS and i can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux maybe not be all that complicated and if anyone wants to look into it, you can give it a try!
+- **Windows:** Because it relies on TexConv to convert files to DDS and I can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux maybe not be all that complicated and if anyone wants to look into it, you can give it a try!
 
 - **TexTools:** TexTools needs to be installed on your system for this plugin to work. If you don't have TextTools yet, get it from [https://www.ffxiv-textools.net/](https://www.ffxiv-textools.net/). Installing on the default path is recommended but you can choose your TexTools installation path if needed.
 
@@ -51,7 +51,7 @@ Adobe Substance 3D Painter/
 
 Back in Substance Painter, navigate to the `Python` menu, and click on `Reload Plugins Folder`, then click on the menu again and enable the plugin there. The plugin's panel should pop up somewhere in your UI and you can move it to your liking now.
 
-After the first run the plugin will try to detect your TexTools folder if you installed it in the default location at `C:\Program Files\FFXIV TexTools`. If you installed it in a different location you will have to use the button near the top of the panel to set the path manually.
+Now in the Plugin UI go to the settings tab. After the first run the plugin will try to detect your TexTools folder if you installed it in the default location at `C:\Program Files\FFXIV TexTools`. If you installed it in a different location you will have to set the path manually.
 
 ℹ️ If you close the plugin and can't find it anymore, look for it in the `Window` menu.
 
@@ -71,13 +71,11 @@ Here's a list of the settings and what they do:
 </div>
 <!-- markdownlint-restore -->
 
-### Main Settings
+### Project Tab
 
-- **TexTools Path:** You can click the button at anytime to change the TexTools path if you ever need to or if it's not detected automatically.
+The project tab contains settings that are specific to the currently open project and the log window.
 
-### Project Settings
-
-- **Substance to XIV Enabled/Disabled:** This button toggles the plugin on and off. If toggled off, the plugin will ignore Substance Painter exports. This setting is off by default so it doesn't interfere with your regular use of Substance Painter.
+- **Substance to XIV Enabled/Disabled:** If toggled off, the plugin will ignore Substance Painter exports. This setting is off by default so it doesn't interfere with your regular use of Substance Painter.
 
 - **Texture Folder button:** This is the path that TEX files will be copied to, so it should point to the textures folder in your mod.
 
@@ -87,13 +85,19 @@ Here's a list of the settings and what they do:
 
 - **Keep DDS files:** If enabled, DDS files generated before converting to TEX will be kept in the export folder. When this is disabled, the DDS files will be removed as soon as the TEX file is generated.
 
-### Log
-
 - **Log:** The log will show relevant information of what the plugin is doing at any point, loading settings from a project that was opened, creating or deleting files, redrawing Penumbra, etc.
 
 - **Export:** The Export button will open the Export Textures window in Substance Painter. In future releases I'd like it to do a quick export instead.
 
 - **Clear Log:** This clears the log completely.
+
+### Settings Tab
+
+The settings tabs contains settings that are set globally regardless or what projects you are working on.
+
+- **TexTools Path:** You can click the button at anytime to change the TexTools path if you ever need to or if it's not detected automatically.
+
+- **Compression Formats:** Here you can choose the DDS compression format for each texture type. When exporting, these will be applied based on the texture suffix (\_id, \_m, \_n, \_base...), so your export preset needs to use valid texture names.
 
 ## How to Build
 

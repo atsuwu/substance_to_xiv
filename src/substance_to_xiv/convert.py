@@ -20,33 +20,49 @@ def get_tex_path():
     return metadata.get("mod_folder")
 
 
-def get_format(input_path, format = ""):
+def get_format(input_path, settings):
     """Gets the compression format from the input path."""
 
-    # if format:
-    #     return format
-    # elif os.path.splitext(input_path)[0].endswith('_n'):
-    #     return 'B8G8R8A8_UNORM'
-    # elif os.path.splitext(input_path)[0].endswith('_norm'):
-    #     return 'B8G8R8A8_UNORM'
-    # elif os.path.splitext(input_path)[0].endswith('_normal'):
-    #     return 'B8G8R8A8_UNORM'
-    # else:
-    #     return 'BC7_UNORM'
+    if os.path.splitext(input_path)[0].endswith('_n'):
+        return settings["format_n"]
+    elif os.path.splitext(input_path)[0].endswith('_norm'):
+        return settings["format_n"]
+    elif os.path.splitext(input_path)[0].endswith('_normal'):
+        return settings["format_n"]
 
-    return 'B8G8R8A8_UNORM'
+    elif os.path.splitext(input_path)[0].endswith('_m'):
+        return settings["format_m"]
+    elif os.path.splitext(input_path)[0].endswith('_mask'):
+        return settings["format_m"]
+
+    elif os.path.splitext(input_path)[0].endswith('_id'):
+        return settings["format_id"]
+
+    elif os.path.splitext(input_path)[0].endswith('_d'):
+        return settings["format_d"]
+    elif os.path.splitext(input_path)[0].endswith('_diff'):
+        return settings["format_d"]
+    elif os.path.splitext(input_path)[0].endswith('_diffuse'):
+        return settings["format_d"]
+    elif os.path.splitext(input_path)[0].endswith('_base'):
+        return settings["format_d"]
+
+    else:
+        return 'R8G8B8A8_UNORM'
 
 
-def to_dds(input_path, textools_path):
+def to_dds(input_path, settings):
     """Converts PNG/TGA to DDS."""
 
     working_dir = Path(input_path)
     os.chdir(working_dir.parent)
 
+    compression_format = get_format(input_path, settings)
+
     dds_args = (
-        get_texconv_bin(textools_path),
+        get_texconv_bin(settings["textools_path"]),
         '-f',
-        get_format(input_path),
+        compression_format,
         '-m',
         '11',
         '-y',
@@ -58,10 +74,10 @@ def to_dds(input_path, textools_path):
     output_path = input_path.replace(".png", ".dds")
     output_path = output_path.replace(".tga", ".dds")
 
-    return(output_path)
+    return(output_path, compression_format)
 
 
-def to_tex(input_path, textools_path):
+def to_tex(input_path, settings):
     """Converts DDS to TEX."""
 
     working_dir = Path(input_path)
@@ -76,7 +92,7 @@ def to_tex(input_path, textools_path):
         output_path = os.path.join(metadata.get("mod_folder"), os.path.basename(output_path))
 
     tex_args = (
-        get_consoletools_bin(textools_path),
+        get_consoletools_bin(settings["textools_path"]),
         '/wrap',
         input_path,
         output_path,
