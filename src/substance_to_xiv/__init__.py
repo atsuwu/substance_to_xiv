@@ -100,32 +100,39 @@ class XIVTexPlugin:
         else:
             self.disable_project_settings()
 
-        # Add elements to layout.
-        layout = QtWidgets.QVBoxLayout()
+        # Create tabs widgets.
+        tabs = QtWidgets.QTabWidget()
 
-        layout_main = QtWidgets.QVBoxLayout()
-        layout_main.addWidget(self.label_mainsettings)
-        layout_main.addWidget(self.button_textools)
-        layout_main.insertSpacing(2, 15)
-
-        layout_project = QtWidgets.QVBoxLayout()
-        layout_project.addWidget(self.label_projectsettings)
-        layout_project.addWidget(self.button_enable)
-        layout_project.addWidget(self.button_modfolder)
-        layout_project.addWidget(self.checkbox_move_tex)
-        layout_project.addWidget(self.checkbox_redraw)
-        layout_project.addWidget(self.checkbox_keep_dds)
-        layout_project.insertSpacing(6, 15)
-        layout_project.addWidget(self.label_log)
-        layout_project.addWidget(self.log)
-
+        # Tab 1: Project Settings.
+        tab_project = QtWidgets.QWidget()
+        tab_project_layout = QtWidgets.QVBoxLayout(tab_project)
+        tab_project_layout.setAlignment(Qt.AlignTop)
+        tab_project_layout.addWidget(self.button_enable)
+        tab_project_layout.addWidget(self.button_modfolder)
+        tab_project_layout.insertSpacing(2, 5)
+        tab_project_layout.addWidget(self.checkbox_move_tex)
+        tab_project_layout.addWidget(self.checkbox_redraw)
+        tab_project_layout.addWidget(self.checkbox_keep_dds)
+        tab_project_layout.insertSpacing(6, 15)
+        tab_project_layout.addWidget(self.log)
         layout_actions = QtWidgets.QHBoxLayout()
         layout_actions.addWidget(self.button_quick_export)
         layout_actions.addWidget(self.button_clear_log)
+        tab_project_layout.addLayout(layout_actions)
 
-        layout.addLayout(layout_main)
-        layout.addLayout(layout_project)
-        layout.addLayout(layout_actions)
+        # Tab 2: Main Settings.
+        tab_settings = QtWidgets.QWidget()
+        tab_settings_layout = QtWidgets.QVBoxLayout(tab_settings)
+        tab_settings_layout.setAlignment(Qt.AlignTop)
+        tab_settings_layout.addWidget(self.button_textools)
+
+        # Add tabs buttons.
+        tabs.addTab(tab_project, "Project")
+        tabs.addTab(tab_settings, "Settings")
+
+        # Add tabs to layout.
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(tabs)
 
         # Hook layout to Substance Painter.
         self.window = QtWidgets.QWidget()
@@ -254,7 +261,7 @@ class XIVTexPlugin:
             self.checkbox_move_tex.setChecked(False)
         else:
             mod_folder = mod_folder[-45:][mod_folder.find('/'):]
-            mod_folder = f"Mod folder\n'.../{mod_folder}'"
+            mod_folder = f"Mod folder\n'...{mod_folder}'"
             self.checkbox_move_tex.setDisabled(False)
             mod_folder_button_size = 40
         self.button_modfolder.setText(mod_folder)
