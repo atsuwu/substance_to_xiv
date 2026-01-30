@@ -22,7 +22,7 @@ When enabled, the plugin takes any PNG or TGA you've exported from Substance Pai
 
 ## Requirements
 
-- **Windows:** Because it relies on TexConv to convert files to DDS and I can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux maybe not be all that complicated and if anyone wants to look into it, you can give it a try!
+- **Windows:** Because it relies on TexConv to convert files to DDS and I can't test on Linux anyway, the plugin will only work on Windows. If converting to DDS is doable with another Linux based tool, making this plugin work on Linux may not be all that complicated and if anyone wants to look into it, you can give it a try!
 
 - **TexTools:** TexTools needs to be installed on your system for this plugin to work. If you don't have TextTools yet, get it from [https://www.ffxiv-textools.net/](https://www.ffxiv-textools.net/). Installing on the default path is recommended but you can choose your TexTools installation path if needed.
 
@@ -83,6 +83,8 @@ The project tab contains settings that are specific to the currently open projec
 
 - **Force Penumbra redraw after export:** If enabled, the plugin will try to request Penumbra to perform a redraw, so that your textures can update in-game right after export. If Penumbra doesn't respond you'll see an error message in the log.
 
+- **Fast Mode:** Fast more allows you to do slightly faster exports by skipping texture compression without having to edit compressions format settings all the time. All textures will be saves uncompressed until this setting is disabled.
+
 - **Keep DDS files:** If enabled, DDS files generated before converting to TEX will be kept in the export folder. When this is disabled, the DDS files will be removed as soon as the TEX file is generated.
 
 - **Log:** The log will show relevant information of what the plugin is doing at any point, loading settings from a project that was opened, creating or deleting files, redrawing Penumbra, etc.
@@ -104,6 +106,8 @@ The settings tabs contains settings that are set globally regardless or what pro
 - **TexTools Path:** You can click the button at anytime to change the TexTools path if you ever need to or if it's not detected automatically.
 
 - **Compression Formats:** Here you can choose the DDS compression format for each texture type. When exporting, these will be applied based on the texture suffix (\_id, \_m, \_n, \_base...), so your export preset needs to use valid texture names.
+
+[Click here for more detailed info about Texture Compression formats and how they differ](https://github.com/atsuwu/substance_to_xiv/blob/main/BCn.md).
 
 ## How to Build
 

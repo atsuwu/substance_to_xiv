@@ -48,16 +48,19 @@ def get_format(input_path, settings):
         return settings["format_d"]
 
     else:
-        return 'R8G8B8A8_UNORM'
+        return 'B8G8R8A8_UNORM'
 
 
-def to_dds(input_path, settings):
+def to_dds(input_path, settings, fast_mode):
     """Converts PNG/TGA to DDS."""
 
     working_dir = Path(input_path)
     os.chdir(working_dir.parent)
 
-    compression_format = get_format(input_path, settings)
+    if fast_mode:
+        compression_format = "B8G8R8A8_UNORM"
+    else:
+        compression_format = get_format(input_path, settings)
 
     dds_args = (
         get_texconv_bin(settings["textools_path"]),
