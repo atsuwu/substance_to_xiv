@@ -14,6 +14,7 @@ penumbra = PenumbraClient()
 script_dir = os.path.dirname(os.path.abspath(__file__))
 settings = Settings(os.path.join(script_dir, "settings.json"))
 metadata = substance_painter.project.Metadata("SubstanceToXIV")
+version = "0.1.0"
 
 XIVTEX_PLUGIN = None
 
@@ -84,6 +85,25 @@ class XIVTexPlugin:
         self.log = QtWidgets.QTextEdit()
         self.log.setReadOnly(True)
         self.log.setPlaceholderText("Log will be shown here...")
+        self.info = QtWidgets.QTextBrowser()
+        self.info.setHtml(f"""
+            <h3>Substance to XIV v{version}</h3>
+            <p>Copyright (C) 2026 Atsu.<br>This software is licensed under GNU GPL-3.0.</p>
+            <p>For newer versions check the <a href='https://github.com/atsuwu/substance_to_xiv/releases'>Github releases page</a>.</p>
+            <h3>Thanks</h3>
+            <p>Here's a list of projects and people that made this plugin possible:</p>
+            <ul>
+                <li><a href='https://www.ffxiv-textools.net/'>TexTools</a>.</li>
+                <li><a href='https://github.com/microsoft/DirectXTex'>TexConv</a>.</li>
+                <li>Aleks for PenumbraClient class in his <a href='https://github.com/Arrenval/Yet-Another-Addon'>Yet Another Addon</a> project.</li>
+                <li>Ottermandias for <a href='https://github.com/xivdev/Penumbra'>Penumbra</a>.</li>
+                <li>The <a href='https://github.com/goatcorp/Dalamud'>Dalamud</a> team for making all this possible.</li>
+                <li>SB! for <a href='https://xivmodarchive.com/modid/111473'>Substance Painter Export + Colorsetting Resources</a>, color row and color blend material setup.</li>
+                <li>This plugin draws inspiration from <a href='https://github.com/emomilol1213/Substance-Painter-DDS-Exporter'>Substance-Painter-DDS-Exporter</a> by emomilol1213, as well as the sample plugins from the Substance Painter Python API docs.</li>
+            </ul>
+            <p>Final Fantasy XIV © SQUARE ENIX CO., LTD. All Rights Reserved.<br>This project is not affiliated with SQUARE ENIX CO., LTD. in any way.</p>
+        """)
+        self.info.setOpenExternalLinks(True)
         self.button_quick_export = QtWidgets.QPushButton("Export")
         self.button_clear_log = QtWidgets.QPushButton("Clear Log")
 
@@ -131,10 +151,14 @@ class XIVTexPlugin:
         tab_settings_layout.addWidget(self.button_textools)
         tab_settings_layout.insertSpacing(1, 15)
 
+        # Tab 2: Info.
+        tab_info = QtWidgets.QWidget()
+        tab_info_layout = QtWidgets.QVBoxLayout(tab_info)
+        tab_info_layout.addWidget(self.info)
+
         self.formats = [
             "BC1_UNORM",
             "BC3_UNORM",
-            "BC4_UNORM",
             "BC5_UNORM",
             "BC7_UNORM",
             "B8G8R8A8_UNORM"
@@ -183,6 +207,7 @@ class XIVTexPlugin:
         # Add tabs buttons.
         tabs.addTab(tab_project, "Project")
         tabs.addTab(tab_settings, "Settings")
+        tabs.addTab(tab_info, "Info")
 
         # Add tabs to layout.
         layout = QtWidgets.QVBoxLayout()
@@ -191,7 +216,7 @@ class XIVTexPlugin:
         # Hook layout to Substance Painter.
         self.window = QtWidgets.QWidget()
         self.window.setLayout(layout)
-        self.window.setWindowTitle("Substance to XIV v1.0")
+        self.window.setWindowTitle("Substance to XIV")
         self.window.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__), "icon.png")))
         substance_painter.ui.add_dock_widget(self.window)
 
