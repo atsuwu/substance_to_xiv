@@ -1,7 +1,9 @@
-# import requests
+# Modified PenumbraClient class from Yet Another Addon by Aleks (GPL-3.0).
+# https://github.com/Arrenval/Yet-Another-Addon/blob/main/utils/penumbra.py
+
 import json
-from urllib.error import URLError
 import urllib.request as req
+from urllib.error import URLError
 
 
 class PenumbraClient:
