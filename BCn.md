@@ -2,11 +2,15 @@
 
 This file tries to explain texture compression formats used by XIV in a practical and relatively short way. If you want more technical information [this Wikipedia article is a good read](https://en.wikipedia.org/wiki/S3_Texture_Compression).
 
+[This article by Nathan Reed on the topic of BCn compression](https://www.reedbeta.com/blog/understanding-bcn-texture-compression-formats/) is also a very good and detailed read if you are interested in the topic.
+
 [This spreadsheet by Sel](https://docs.google.com/spreadsheets/d/1kIKvVsW3fOnVeTi9iZlBDqJo6GWVn6K6BCUIRldEjhw/edit?ref=xivmods.guide&gid=1406279597#gid=1406279597) is also a useful resource when talking about XIV textures and what information is stored in each of their channels. If you haven't yet, it's worth bookmarking or saving it somewhere, you will probably come back to it!
 
 ## Formats
 
-Block Compression formats (BCn) range from BC1 to BC7.
+Block compression refers to the different types of compression that can be used in .DDS texture files. These are all lossy compression formats, meaning some data is thrown away when compressing the images, leading to some quality loss.
+
+Block Compression formats (BCn) currently range from BC1 to BC7.
 
 - **BC1 (DXT1):** Low quality color data, 1-bit alpha (on/off).
 - **BC2 (DXT3):** Low quality color, 4-bit alpha (better than BC1, sharp alpha use cases).
@@ -26,13 +30,13 @@ Looking at these specs you will see that some of these formats are not as releva
 
 All of this leaves us with BC5 & BC7. So let's compare the two a bit more and see when BC5 can help.
 
-Like we've said before, BC7 is a pretty good compression algorithm, it has very little image quality loss for color information like diffuse maps, but even for data maps packed into one file such as the mask texture, it should be very good.
+Like we've said before, BC7 is a pretty good compression algorithm, it has very little image quality loss for color information like diffuse maps, and small compression artifacts are much less noticeable on color textures in-game. However, BC7 is a bit more limited for data textures packed into one file such as the mask texture because of channel interference.
 
 <!-- TODO: Add BC7/Uncompressed Image comparison. -->
 
-Only thing where it falls short is with normal maps. Remember that normal maps are not just color information, they represent vector data for a 3D model. Imagine an arrow coming out of each pixel in the normal map and pointing in a slightly different direction. Texture compression artifacts that wouldn't be all that noticeable when examining the texture with our eyes might still cause problems in-game, and this is usually even more obvious on shinier or metallic surfaces.
+Because of this, it kinda falls short is with normal maps. Remember that normal maps are not just color information, they represent vector data for a 3D model. Imagine an arrow coming out of each pixel in the normal map and pointing in a slightly different direction. Texture compression artifacts that wouldn't be all that noticeable when examining the texture with our eyes might still cause problems in-game, and this is usually even more obvious on shinier or metallic surfaces.
 
-This is where BC5 can help a bit. BC5 uses the same amount of data on 2 channels (red and green) than BC7 uses in 4 (red, green, blue & alpha), which results in better image quality at the same file size. The blue channel in normal maps can be safely discarded and rebuild at run time, so the red and green channels in a BC5 are all we need.
+This is where BC5 can help a bit. BC5 uses the same amount of data on 2 channels (red and green) as BC7 uses in 4 (red, green, blue & alpha), which results in better image quality at the same file size, and the two channels are compressed separately. The blue channel in normal maps can be safely discarded and rebuild at run time, so the red and green channels in a BC5 are all we need.
 
 <!-- TODO: Add BC5/BC7 Image comparison. -->
 
@@ -58,10 +62,10 @@ Keep in mind this topic can be a bit subjective, not in how the compression work
 
 ## Compression Recommendations by Texture Type
 
-- Diffuse: BC3, BC7 if higher quality needed.
+- Diffuse: BC3/BC7 depending on required image quality.
 - ID: BC5.
-- Mask: BC7.
-- Normal Map: BC5 if no Opacity needed, BC7 otherwise. Uncompressed only if you can notice any compression artifacts after trying BC5/7.
+- Mask: BC7, Uncompressed if artifacts are noticeable.
+- Normal Map: BC5 if no Opacity needed, BC7 otherwise. Uncompressed if you can notice any compression artifacts after trying BC5/7.
 
 ## Compression Default Settings in Substance to XIV
 
@@ -72,10 +76,12 @@ In order to error on the safe side, the plugin's defaults lean a bit more toward
 - Mask: BC7.
 - Normal Map: Uncompressed.
 
-I would still recommend that you check for texture quality and re-export with different formats, since that's part of the point of the plugin, being able to do quick texture exports, see things in game, and fine tune things more easily!
+While any amount of compression, regardless of the format, will lead to some image quality loss, it's up to you to determine how clean your textures need to look and what resolution they need to be in. Maximizing the texture space when making your UVs is also very important.
+
+I would still recommend that you check for texture quality and re-export with different formats, since that's part of the point of the plugin, being able to do quick texture exports, see things in game, compare, and fine tune things more easily!
 
 ## Conclusion
 
 If you are here I'll assume you care about texture authoring in XIV in one way or another. This topic is tied to the Substance to XIV plugin, and I feel a lot of people that make mods for the game haven't looked into the differences between the available formats, and therefore when it's best to use one or another.
 
-While uncompressed textures will always look better, the image quality impact is in many cases negligible, especially at higher resolutions like 4k, where a single uncompressed texture will take 85MB, up to four times the size of a compressed one. Multiply that by (usually) 3 textures per gear piece, and several gear pieces per mod, several mods on screen, not to mentions hundreds of them installed on your SSD, and you can see where this is going. Bit by bit it becomes a considerable waste of VRAM and storage resources for little to no gain.
+While uncompressed textures will always look better, the image quality impact is in many cases negligible, unless you are zooming in on the texture itself to see the differences, and especially at higher resolutions like 4k, where a single uncompressed texture will take 85MB, up to four times the size of a compressed one. Multiply that by (usually) 3 textures per gear piece, and several gear pieces per mod, several mods on screen, not to mention hundreds of them installed on your SSD, and you can see where this is going. Bit by bit it becomes a considerable waste of VRAM and storage resources for little to no gain.
