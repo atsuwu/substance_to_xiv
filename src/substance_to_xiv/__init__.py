@@ -167,7 +167,8 @@ class XIVTexPlugin:
         self.label_formats = QtWidgets.QLabel("COMPRESSION FORMATS:")
         tab_settings_layout.addWidget(self.label_formats)
 
-        self.label_d = QtWidgets.QLabel("Diffuse:")
+        self.label_d = QtWidgets.QLabel("Diffuse (_d,_base...):")
+        self.label_d.setToolTip("Applied to textures ending with suffixes: _d, _diff, _diffuse, _albedo, _base, _basecolor, _color.")
         self.combo_format_d = QtWidgets.QComboBox()
         self.combo_format_d.addItems(self.formats)
 
@@ -175,7 +176,8 @@ class XIVTexPlugin:
         diffuse_layout.addWidget(self.label_d)
         diffuse_layout.addWidget(self.combo_format_d)
 
-        self.label_id = QtWidgets.QLabel("Id:")
+        self.label_id = QtWidgets.QLabel("Id (_id):")
+        self.label_id.setToolTip("Applied to textures ending with suffixes: _id.")
         self.combo_format_id = QtWidgets.QComboBox()
         self.combo_format_id.addItems(self.formats)
 
@@ -183,7 +185,8 @@ class XIVTexPlugin:
         id_layout.addWidget(self.label_id)
         id_layout.addWidget(self.combo_format_id)
 
-        self.label_m = QtWidgets.QLabel("Mask:")
+        self.label_m = QtWidgets.QLabel("Mask (_m,_mask):")
+        self.label_m.setToolTip("Applied to textures ending with suffixes: _m, _mask.")
         self.combo_format_m = QtWidgets.QComboBox()
         self.combo_format_m.addItems(self.formats)
 
@@ -191,7 +194,8 @@ class XIVTexPlugin:
         mask_layout.addWidget(self.label_m)
         mask_layout.addWidget(self.combo_format_m)
 
-        self.label_n = QtWidgets.QLabel("Normal:")
+        self.label_n = QtWidgets.QLabel("Normal (_n,_norm...):")
+        self.label_n.setToolTip("Applied to textures ending with suffixes: _n, norm, _normal, _normals.")
         self.combo_format_n = QtWidgets.QComboBox()
         self.combo_format_n.addItems(self.formats)
 
@@ -199,10 +203,20 @@ class XIVTexPlugin:
         normal_layout.addWidget(self.label_n)
         normal_layout.addWidget(self.combo_format_n)
 
+        self.label_fallback = QtWidgets.QLabel("Fallback:")
+        self.label_fallback.setToolTip("Applied to textures that don't use a recognized suffix.")
+        self.combo_format_fallback = QtWidgets.QComboBox()
+        self.combo_format_fallback.addItems(self.formats)
+
+        fallback_layout = QtWidgets.QHBoxLayout()
+        fallback_layout.addWidget(self.label_fallback)
+        fallback_layout.addWidget(self.combo_format_fallback)
+
         tab_settings_layout.addLayout(diffuse_layout)
         tab_settings_layout.addLayout(id_layout)
         tab_settings_layout.addLayout(mask_layout)
         tab_settings_layout.addLayout(normal_layout)
+        tab_settings_layout.addLayout(fallback_layout)
 
         # Add tabs buttons.
         tabs.addTab(tab_project, "Project")
@@ -234,6 +248,7 @@ class XIVTexPlugin:
         self.combo_format_id.currentTextChanged.connect(self.combo_format_id_changed)
         self.combo_format_m.currentTextChanged.connect(self.combo_format_mask_changed)
         self.combo_format_n.currentTextChanged.connect(self.combo_format_normal_changed)
+        self.combo_format_fallback.currentTextChanged.connect(self.combo_format_fallback_changed)
 
         # Combo boxes initial state.
         format_d = settings.get("format_d", "BC7_UNORM")
@@ -245,9 +260,12 @@ class XIVTexPlugin:
         format_m = settings.get("format_m", "BC7_UNORM")
         index = self.formats.index(format_m)
         self.combo_format_m.setCurrentIndex(index)
-        format_n = settings.get("format_n", "B8G8R8A8_UNORM") # TODO: Test with R8G8B8A8_UNORM and compare.
+        format_n = settings.get("format_n", "B8G8R8A8_UNORM")
         index = self.formats.index(format_n)
         self.combo_format_n.setCurrentIndex(index)
+        format_fallback = settings.get("format_fallback", "B8G8R8A8_UNORM")
+        index = self.formats.index(format_fallback)
+        self.combo_format_fallback.setCurrentIndex(index)
 
         # Subscribe to project related events.
         connections = {
@@ -345,6 +363,14 @@ class XIVTexPlugin:
         #  Will need to set an export directory and get the active texture set with substance_painter.textureset.get_active_stack
         #  Will also need to add an option to get all texture sets and export all.
 
+        # ResourceExportPreset(
+        #     resource_id=ResourceID(
+        #         context="starter_assets",
+        #         name="PBR Metallic Roughness",
+        #         version="12212909757578709068.spexp",
+        #     )
+        # )
+
     def button_clear_log_click(self):
         self.log.clear()
 
@@ -359,6 +385,9 @@ class XIVTexPlugin:
 
     def combo_format_normal_changed(self, value):
         settings.set("format_n", value)
+
+    def combo_format_fallback_changed(self, value):
+        settings.set("format_fallback", value)
 
     def update_ui(self):
         if metadata.get("plugin_enable"):

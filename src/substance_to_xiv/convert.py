@@ -23,32 +23,24 @@ def get_tex_path():
 def get_format(input_path, settings):
     """Gets the compression format from the input path."""
 
-    if os.path.splitext(input_path)[0].endswith('_n'):
-        return settings["format_n"]
-    elif os.path.splitext(input_path)[0].endswith('_norm'):
-        return settings["format_n"]
-    elif os.path.splitext(input_path)[0].endswith('_normal'):
-        return settings["format_n"]
+    name = os.path.splitext(input_path)[0]
 
-    elif os.path.splitext(input_path)[0].endswith('_m'):
-        return settings["format_m"]
-    elif os.path.splitext(input_path)[0].endswith('_mask'):
-        return settings["format_m"]
+    if name.endswith(
+        ("_d", "_diff", "_diffuse", "_albedo", "_base", "_basecolor", "_color")
+    ):
+        return settings["format_d"]
 
-    elif os.path.splitext(input_path)[0].endswith('_id'):
+    elif name.endswith("_id"):
         return settings["format_id"]
 
-    elif os.path.splitext(input_path)[0].endswith('_d'):
-        return settings["format_d"]
-    elif os.path.splitext(input_path)[0].endswith('_diff'):
-        return settings["format_d"]
-    elif os.path.splitext(input_path)[0].endswith('_diffuse'):
-        return settings["format_d"]
-    elif os.path.splitext(input_path)[0].endswith('_base'):
-        return settings["format_d"]
+    elif name.endswith(("_m", "_mask")):
+        return settings["format_m"]
+
+    elif name.endswith(("_n", "_norm", "_normal", "_normals")):
+        return settings["format_n"]
 
     else:
-        return 'B8G8R8A8_UNORM'
+        return settings["format_fallback"]
 
 
 def to_dds(input_path, settings, fast_mode):
