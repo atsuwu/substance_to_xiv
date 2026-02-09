@@ -14,7 +14,7 @@ penumbra = PenumbraClient()
 script_dir = os.path.dirname(os.path.abspath(__file__))
 settings = Settings(os.path.join(script_dir, "settings.json"))
 metadata = substance_painter.project.Metadata("SubstanceToXIV")
-version = "0.1.0"
+version = "1.0.0"
 
 XIVTEX_PLUGIN = None
 

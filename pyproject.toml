@@ -1,6 +1,6 @@
 [project]
 name = "substance_to_xiv"
-version = "0.1.0"
+version = "1.0.0"
 description = "Substance Painter plugin that converts exported textures to XIV TEX format and copies them to a mod folder."
 authors = [
     {name = "Atsu"}
