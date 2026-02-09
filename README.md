@@ -4,7 +4,7 @@
 
 <!-- markdownlint-disable -->
 <div align="center">
-  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/demo.png" alt="Substance Painter to XIV Demo" title="Substance Painter to XIV Demo" />
+  <img src="https://raw.githubusercontent.com/atsuwu/substance_to_xiv/refs/heads/main/assets/demo.avif" alt="Substance Painter to XIV Demo" title="Substance Painter to XIV Demo" />
 </div>
 <!-- markdownlint-restore -->
 
